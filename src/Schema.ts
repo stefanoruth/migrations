@@ -1,6 +1,6 @@
-import { Blueprint } from './Blueprint'
+import { TableBuilder } from './TableBuilder'
 
-type SchemaCallback = (table: Blueprint) => void
+type SchemaCallback = (table: TableBuilder) => void
 
 export class Schema {
     static create(tableName: string, callback: SchemaCallback) {}
