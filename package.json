@@ -10,7 +10,7 @@
         "dev": "tsc -w",
         "test": "jest",
         "test:watch": "jest --watchAll",
-        "cli": "node ./dist/cli.js"
+        "cli": "ts-node ./src/cli.ts"
     },
     "devDependencies": {
         "@types/jest": "^26.0.13",
@@ -31,5 +31,8 @@
         "bracketSpacing": true,
         "arrowParens": "avoid",
         "printWidth": 120
+    },
+    "dependencies": {
+        "ts-node": "^9.0.0"
     }
 }

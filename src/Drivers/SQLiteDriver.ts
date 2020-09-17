@@ -1,6 +1,7 @@
 import sqlite from 'sqlite3'
+import { Driver } from './Driver'
 
-export class SQLiteDriver {
+export class SQLiteDriver implements Driver {
     private client?: sqlite.Database
 
     constructor(private filename: string) {}
@@ -21,20 +22,7 @@ export class SQLiteDriver {
         })
     }
 
-    async isHealthy(): Promise<boolean> {
-        return this.query('SELECT COUNT(*) FROM sqlite_master')
-            .then(res => {
-                if (res === null) {
-                    return false
-                }
-                return true
-            })
-            .catch(err => {
-                return false
-            })
-    }
-
-    async connect() {
+    async connect(): Promise<void> {
         return new Promise((resolve, reject) => {
             this.client = new sqlite.Database(this.filename, err => {
                 if (err) {
@@ -45,7 +33,7 @@ export class SQLiteDriver {
         })
     }
 
-    async close() {
+    async disconnect(): Promise<void> {
         return new Promise((resolve, reject) => {
             if (!this.client) {
                 return resolve()

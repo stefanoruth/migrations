@@ -1,11 +1,10 @@
-import { Migration } from '.'
-import { Schema } from './Schema'
+import { Migrator } from './Migrator'
+import path from 'path'
 
-class UserMigration extends Migration {
-    async run() {
-        Schema.create('users', blueprint => {
-            // blueprint.integer('id')
-            // blueprint.string('email')
-        })
-    }
-}
+const migrationsDir = path.join(__dirname, '../example/migrations')
+
+console.log({ migrationsDir })
+
+const migrator = new Migrator(migrationsDir)
+
+migrator.getMigrations()
