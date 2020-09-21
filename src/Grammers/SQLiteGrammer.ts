@@ -1,55 +1,42 @@
-import { ColumnType, Column } from '../Column'
 import { Blueprint } from '../Blueprint'
+import { BaseGrammer, FieldTypes, Modifiers } from './BaseGrammer'
 
-export class SQLiteGrammer {
-    protected fieldTypes: { [k in ColumnType]: string } = {
+export class SQLiteGrammer extends BaseGrammer {
+    protected fieldTypes: FieldTypes = {
         string: 'varchar',
         integer: 'integer',
-        bigInteger: 'interger',
+        bigInteger: 'integer',
         boolean: 'tinyint(1)',
         json: 'text',
         uuid: 'varchar',
         dateTimeTz: 'datetime',
     }
 
-    /**
-     * Compile the query to determine the list of columns.
-     */
-    compileTableExists(table: string) {
-        return `SELECT * FROM sqlite_master WHERE type = 'table' AND name = ${table}`
+    protected modifiers: Modifiers = ['nullable', 'default', 'primaryIndex', 'autoIncrement']
+
+    compileAlter(blueprint: Blueprint) {
+        return blueprint.columns.map(column => {
+            return `alter table ${this.wrapTable(blueprint.name)} add column ${this.addColumn(column)}`
+        })
     }
 
-    /**
-     * Compile the query to determine the list of columns.
-     */
-    compileColumnListing(table: string) {
-        return `pragma table_info(${table})`
+    compileDrop(blueprint: Blueprint): string {
+        return `drop table ${this.wrapTable(blueprint.name)}`
     }
 
-    compileTableList() {
-        return `SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%'`
+    compileDropIfExists(blueprint: Blueprint): string {
+        return `drop table if exists ${this.wrapTable(blueprint.name)}`
     }
 
-    /**
-     * Compile a create table command.
-     */
-    compileCreate(blueprint: Blueprint) {
-        return `CREATE TABLE ${blueprint.table} (${this.getColumns(blueprint).join(', ')})`
+    compileRename(blueprint: Blueprint): string {
+        throw new Error(`SQLite doesn't support renameColumn`)
     }
 
-    getColumns(blueprint: Blueprint) {
-        const columns: string[] = []
-
-        for (const column of blueprint.columns) {
-            const sql = `${column.name} ${this.getType(column.type)}`
-
-            columns.push(sql)
-        }
-
-        return columns
+    wrapTable(name: string) {
+        return `"${name}"`
     }
 
-    getType(type: ColumnType): string {
-        return this.fieldTypes[type]
+    wrapColumn(name: string) {
+        return `"${name}"`
     }
 }

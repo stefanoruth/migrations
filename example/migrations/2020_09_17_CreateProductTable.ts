@@ -1,8 +1,8 @@
-import { Migration, Schema } from '../../src'
+import { Schema } from '../../src'
 
 export default function () {
-    Schema.create('users', blueprint => {
-        // blueprint.integer('id')
-        // blueprint.string('email')
+    return Schema.create('users', table => {
+        table.integer('id')
+        table.string('email')
     })
 }

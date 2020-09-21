@@ -9,6 +9,7 @@ export interface ColumnOptions {
     unsigned?: boolean
     uniqueIndex?: boolean
     primaryIndex?: boolean
+    change?: boolean
 }
 
 export interface Column extends ColumnOptions {
@@ -57,6 +58,12 @@ export class ColumnModifier {
 
     primay() {
         this.column.primaryIndex = true
+
+        return this
+    }
+
+    change() {
+        this.column.change = true
 
         return this
     }

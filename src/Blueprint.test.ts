@@ -1,19 +1,20 @@
-import { TableBuilder } from './TableBuilder'
-import { Column } from './Column'
+import { Blueprint } from './Blueprint'
 
-let columns: Column[]
-let table: TableBuilder
+let table: Blueprint
 
 beforeEach(() => {
-    columns = []
-    table = new TableBuilder(columns)
+    table = new Blueprint('foobar')
 })
 
-describe('TableBuilder', () => {
-    test('Column: id', () => {
-        table.id()
+describe('Blueprint', () => {
+    test('Table name', () => {
+        expect(table.name).toBe('foobar')
+    })
 
-        expect(columns[0]).toEqual({
+    test('Column: increments', () => {
+        table.increments('id')
+
+        expect(table.columns[0]).toEqual({
             name: 'id',
             type: 'bigInteger',
             primaryIndex: true,
@@ -27,7 +28,7 @@ describe('TableBuilder', () => {
         table.string('email').unique()
         table.string('password').nullable()
 
-        expect(columns).toEqual([
+        expect(table.columns).toEqual([
             { name: 'id', type: 'uuid' },
             { name: 'email', type: 'string', length: 100, uniqueIndex: true },
             { name: 'password', type: 'string', length: 100, nullable: true },

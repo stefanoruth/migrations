@@ -2,19 +2,43 @@ import { Blueprint } from '../Blueprint'
 import { SQLiteGrammer } from './SQLiteGrammer'
 
 describe('SQLiteGrammer', () => {
-    describe('Creates', () => {
-        test('Create table with id and email', async () => {
-            const blueprint: Blueprint = {
-                table: 'users',
-                columns: [
-                    { name: 'id', type: 'integer' },
-                    { name: 'email', type: 'string' },
-                ],
-            }
+    const grammer = new SQLiteGrammer()
 
-            const driver = new SQLiteGrammer()
+    test('Create basic table', () => {
+        const table = new Blueprint('users')
 
-            expect(driver.compileCreate(blueprint)).toBe('CREATE TABLE users (id integer, email varchar)')
-        })
+        table.create()
+        table.increments('id')
+        table.string('email')
+
+        expect(grammer.toSql(table)).toEqual([
+            'create table "users" ("id" integer not null primary key autoincrement, "email" varchar not null)',
+        ])
+    })
+
+    test('Alter basic table', () => {
+        const table = new Blueprint('users')
+
+        table.increments('id')
+        table.string('email')
+
+        expect(grammer.toSql(table)).toEqual([
+            'alter table "users" add column "id" integer not null primary key autoincrement',
+            'alter table "users" add column "email" varchar not null',
+        ])
+    })
+
+    test('Drop table', () => {
+        const table = new Blueprint('users')
+        table.drop()
+
+        expect(grammer.toSql(table)).toEqual(['drop table "users"'])
+    })
+
+    test('Drop table if exists', () => {
+        const table = new Blueprint('users')
+        table.dropIfExists()
+
+        expect(grammer.toSql(table)).toEqual(['drop table if exists "users"'])
     })
 })

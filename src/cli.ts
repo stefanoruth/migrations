@@ -1,10 +1,13 @@
 import { Migrator } from './Migrator'
 import path from 'path'
+import { runCommand } from './Command'
 
-const migrationsDir = path.join(__dirname, '../example/migrations')
+runCommand(async () => {
+    const migrationsDir = path.join(__dirname, '../example/migrations')
 
-console.log({ migrationsDir })
+    console.log({ migrationsDir })
 
-const migrator = new Migrator(migrationsDir)
+    const migrator = new Migrator(migrationsDir)
 
-migrator.getMigrations()
+    console.log(await migrator.getMigrations())
+})
