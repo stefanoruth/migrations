@@ -41,4 +41,11 @@ describe('SQLiteGrammer', () => {
 
         expect(grammer.toSql(table)).toEqual(['drop table if exists "users"'])
     })
+
+    test('Rename table', () => {
+        const table = new Blueprint('users')
+        table.rename('foo')
+
+        expect(grammer.toSql(table)).toEqual(['alter table "users" rename to "foo"'])
+    })
 })

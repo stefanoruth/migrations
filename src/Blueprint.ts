@@ -5,6 +5,7 @@ export type BlueprintAction = 'create' | 'alter' | 'drop' | 'rename' | 'dropIfEx
 export class Blueprint {
     public readonly columns: Column[]
     private action: BlueprintAction = 'alter'
+    private _rename?: string
 
     constructor(public readonly name: string, columns: Column[] = []) {
         this.columns = columns
@@ -22,6 +23,14 @@ export class Blueprint {
         return new ColumnModifier(column)
     }
 
+    public get newTableName() {
+        if (this._rename) {
+            return this._rename
+        }
+
+        throw new Error(`No new name for the table has been set`)
+    }
+
     public get type() {
         return this.action
     }
@@ -34,11 +43,20 @@ export class Blueprint {
         this.action = 'drop'
     }
 
+    rename(name: string) {
+        this.action = 'rename'
+        this._rename = name
+    }
+
     dropIfExists() {
         this.action = 'dropIfExists'
     }
 
     increments(column: string) {
+        return this.addColumn(column, 'integer', { autoIncrement: true, unsigned: true, primaryIndex: true })
+    }
+
+    bigIncrements(column: string) {
         return this.addColumn(column, 'bigInteger', { autoIncrement: true, unsigned: true, primaryIndex: true })
     }
 

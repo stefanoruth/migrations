@@ -16,7 +16,7 @@ describe('Blueprint', () => {
 
         expect(table.columns[0]).toEqual({
             name: 'id',
-            type: 'bigInteger',
+            type: 'integer',
             primaryIndex: true,
             autoIncrement: true,
             unsigned: true,

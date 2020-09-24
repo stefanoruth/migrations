@@ -12,7 +12,11 @@ export class Database {
     }
 
     async createTable(table: Blueprint) {
-        return this.driver.query(this.grammer.compileCreate(table))
+        const sqlQueries = this.grammer.compileCreate(table)
+
+        for (const sql of sqlQueries) {
+            await this.driver.query(sql)
+        }
     }
 
     async alterTable(table: Blueprint) {}

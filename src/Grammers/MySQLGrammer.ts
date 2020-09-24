@@ -3,7 +3,7 @@ import { BaseGrammer, FieldTypes, Modifiers } from './BaseGrammer'
 
 export class MySQLGrammer extends BaseGrammer {
     protected fieldTypes: FieldTypes = {
-        string: 'varchar(100)',
+        string: column => `varchar(${column.length})`,
         integer: 'int',
         bigInteger: 'bigint',
         boolean: 'tinyint(1)',
@@ -12,7 +12,12 @@ export class MySQLGrammer extends BaseGrammer {
         dateTimeTz: 'datetime',
     }
 
-    protected modifiers: Modifiers = ['nullable', 'default', 'primaryIndex', 'autoIncrement']
+    protected modifiers: Modifiers = {
+        unsigned: column => (column.unsigned === true ? ' unsigned' : ''),
+        nullable: column => (column.nullable === true ? '' : ' not null'),
+        autoIncrement: column => (column.autoIncrement === true ? ' auto_increment' : ''),
+        primaryIndex: column => (column.primaryIndex === true ? ' primary key' : ''),
+    }
 
     wrapTable(name: string) {
         return '`' + name + '`'
@@ -20,5 +25,13 @@ export class MySQLGrammer extends BaseGrammer {
 
     wrapColumn(name: string) {
         return '`' + name + '`'
+    }
+
+    modifyAutoIncrement(value: boolean | undefined) {
+        if (value === true) {
+            return ' auto_increment'
+        }
+
+        return ''
     }
 }

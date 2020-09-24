@@ -12,7 +12,11 @@ export class SQLiteGrammer extends BaseGrammer {
         dateTimeTz: 'datetime',
     }
 
-    protected modifiers: Modifiers = ['nullable', 'default', 'primaryIndex', 'autoIncrement']
+    protected modifiers: Modifiers = {
+        nullable: column => (column.nullable === true ? '' : ' not null'),
+        primaryIndex: column => (column.primaryIndex === true ? ' primary key' : ''),
+        autoIncrement: column => (column.autoIncrement === true ? ' autoincrement' : ''),
+    }
 
     compileAlter(blueprint: Blueprint) {
         return blueprint.columns.map(column => {
@@ -20,16 +24,16 @@ export class SQLiteGrammer extends BaseGrammer {
         })
     }
 
-    compileDrop(blueprint: Blueprint): string {
-        return `drop table ${this.wrapTable(blueprint.name)}`
+    compileDrop(blueprint: Blueprint): string[] {
+        return [`drop table ${this.wrapTable(blueprint.name)}`]
     }
 
-    compileDropIfExists(blueprint: Blueprint): string {
-        return `drop table if exists ${this.wrapTable(blueprint.name)}`
+    compileDropIfExists(blueprint: Blueprint): string[] {
+        return [`drop table if exists ${this.wrapTable(blueprint.name)}`]
     }
 
-    compileRename(blueprint: Blueprint): string {
-        throw new Error(`SQLite doesn't support renameColumn`)
+    compileRename(blueprint: Blueprint): string[] {
+        return [`alter table ${this.wrapTable(blueprint.name)} rename to ${this.wrapTable(blueprint.newTableName)}`]
     }
 
     wrapTable(name: string) {
