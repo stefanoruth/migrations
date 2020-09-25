@@ -102,7 +102,7 @@ export class Blueprint {
     }
 
     private createIndexName(type: IndexType, columns: string[]) {
-        return `${this.table}_${columns.join('_')}_${type}`
+        return `${this.table}_${columns.join('_')}_${type}`.toLowerCase()
     }
 
     private dropIndexCommand(name: CommandType, type: IndexType, columns: string | string[]) {
@@ -201,10 +201,6 @@ export class Blueprint {
 
     enum(column: string, allowed: string[]) {
         return this.addColumn(column, 'enum', { allowed })
-    }
-
-    set(column: string, allowed: string[]) {
-        return this.addColumn(column, 'set', { allowed })
     }
 
     json(column: string) {

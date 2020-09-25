@@ -14,7 +14,6 @@ export type ColumnType =
     | 'decimal'
     | 'boolean'
     | 'enum'
-    | 'set'
     | 'json'
     | 'jsonb'
     | 'date'
@@ -43,6 +42,7 @@ export interface ColumnOptions {
     change?: boolean
     total?: number
     places?: number
+    useCurrent?: boolean
     allowed?: string[]
 }
 

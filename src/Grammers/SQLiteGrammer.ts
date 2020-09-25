@@ -10,6 +10,29 @@ export class SQLiteGrammer extends BaseGrammer {
         json: 'text',
         uuid: 'varchar',
         dateTimeTz: 'datetime',
+        char: 'varchar',
+        text: 'text',
+        mediumText: 'text',
+        longText: 'text',
+        tinyInteger: 'integer',
+        smallInteger: 'integer',
+        mediumInteger: 'integer',
+        float: 'float',
+        double: 'float',
+        decimal: 'numeric',
+        enum: column => `varchar check ("${column.name}" in ('${column.allowed?.join("', ")}'))`,
+        jsonb: 'text',
+        date: 'date',
+        dateTime: 'datetime',
+        time: 'time',
+        timeTz: 'time',
+        timestamp: column => (column.useCurrent ? 'datetime default CURRENT_TIMESTAMP' : 'datetime'),
+        timestampTz: column => (column.useCurrent ? 'datetime default CURRENT_TIMESTAMP' : 'datetime'),
+        year: 'integer',
+        binary: 'blob',
+        ipAddress: 'varchar',
+        macAddress: 'varchar',
+        geometry: 'geometry',
     }
 
     protected modifiers: Modifiers = {
@@ -41,7 +64,8 @@ export class SQLiteGrammer extends BaseGrammer {
     }
 
     compileRename(blueprint: Blueprint): string[] {
-        return [`alter table ${this.wrapTable(blueprint.table)} rename to ${this.wrapTable(blueprint.newTableName)}`]
+        return []
+        // return [`alter table ${this.wrapTable(blueprint.table)} rename to ${this.wrapTable(blueprint.newTableName)}`]
     }
 
     wrapTable(name: string) {
