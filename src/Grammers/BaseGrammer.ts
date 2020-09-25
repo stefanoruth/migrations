@@ -56,6 +56,9 @@ export abstract class BaseGrammer {
         return type(column)
     }
 
+    /**
+     * Convert blueprint to sql.
+     */
     toSql(blueprint: Blueprint): string[] {
         if (blueprint.type === 'create') {
             return this.compileCreate(blueprint)
@@ -72,52 +75,40 @@ export abstract class BaseGrammer {
         throw new Error('Not able to produce any sql')
     }
 
+    /**
+     * Wrap table.
+     */
     abstract wrapTable(name: string): string
 
+    /**
+     * Wrap columns.
+     */
     abstract wrapColumn(name: string): string
 
     /**
      * Compile a create table command.
      */
-    compileCreate(blueprint: Blueprint): string[] {
-        return [
-            this.compileCreateEncoding(
-                `create table ${this.wrapTable(blueprint.name)} (${this.getColumns(blueprint).join(', ')})`
-            ),
-        ]
-    }
+    abstract compileCreate(blueprint: Blueprint): string[]
 
     /**
      * Compiles alter table commands.
      */
-    compileAlter(blueprint: Blueprint): string[] {
-        return [
-            `alter table ${this.wrapTable(blueprint.name)} ${this.getColumns(blueprint)
-                .map(column => `add ${column}`)
-                .join(', ')}`,
-        ]
-    }
+    abstract compileAlter(blueprint: Blueprint): string[]
 
     /**
      * Compile a drop table command.
      */
-    compileDrop(blueprint: Blueprint): string[] {
-        throw new Error(`Grammer doesn't support drop table`)
-    }
+    abstract compileDrop(blueprint: Blueprint): string[]
 
     /**
      * Compile a drop if table exists command.
      */
-    compileDropIfExists(blueprint: Blueprint): string[] {
-        throw new Error(`Grammer doesn't support drop table if exists`)
-    }
+    abstract compileDropIfExists(blueprint: Blueprint): string[]
 
     /**
      * Compile a rename table command.
      */
-    compileRename(blueprint: Blueprint): string[] {
-        throw new Error(`Grammer doesn't support rename table`)
-    }
+    abstract compileRename(blueprint: Blueprint): string[]
 
     /**
      * Append the character set specifications to a command.

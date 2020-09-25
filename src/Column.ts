@@ -1,4 +1,35 @@
-export type ColumnType = 'string' | 'integer' | 'boolean' | 'json' | 'bigInteger' | 'uuid' | 'dateTimeTz'
+export type ColumnType =
+    | 'integer'
+    | 'bigInteger'
+    | 'char'
+    | 'string'
+    | 'text'
+    | 'mediumText'
+    | 'longText'
+    | 'tinyInteger'
+    | 'smallInteger'
+    | 'mediumInteger'
+    | 'float'
+    | 'double'
+    | 'decimal'
+    | 'boolean'
+    | 'enum'
+    | 'set'
+    | 'json'
+    | 'jsonb'
+    | 'date'
+    | 'dateTime'
+    | 'dateTimeTz'
+    | 'time'
+    | 'timeTz'
+    | 'timestamp'
+    | 'timestampTz'
+    | 'year'
+    | 'binary'
+    | 'uuid'
+    | 'ipAddress'
+    | 'macAddress'
+    | 'geometry'
 
 export interface ColumnOptions {
     nullable?: boolean
@@ -10,6 +41,9 @@ export interface ColumnOptions {
     uniqueIndex?: boolean
     primaryIndex?: boolean
     change?: boolean
+    total?: number
+    places?: number
+    allowed?: string[]
 }
 
 export interface Column extends ColumnOptions {

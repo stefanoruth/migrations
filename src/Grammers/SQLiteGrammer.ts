@@ -18,22 +18,30 @@ export class SQLiteGrammer extends BaseGrammer {
         autoIncrement: column => (column.autoIncrement === true ? ' autoincrement' : ''),
     }
 
+    compileCreate(blueprint: Blueprint): string[] {
+        return [
+            this.compileCreateEncoding(
+                `create table ${this.wrapTable(blueprint.table)} (${this.getColumns(blueprint).join(', ')})`
+            ),
+        ]
+    }
+
     compileAlter(blueprint: Blueprint) {
         return blueprint.columns.map(column => {
-            return `alter table ${this.wrapTable(blueprint.name)} add column ${this.addColumn(column)}`
+            return `alter table ${this.wrapTable(blueprint.table)} add column ${this.addColumn(column)}`
         })
     }
 
     compileDrop(blueprint: Blueprint): string[] {
-        return [`drop table ${this.wrapTable(blueprint.name)}`]
+        return [`drop table ${this.wrapTable(blueprint.table)}`]
     }
 
     compileDropIfExists(blueprint: Blueprint): string[] {
-        return [`drop table if exists ${this.wrapTable(blueprint.name)}`]
+        return [`drop table if exists ${this.wrapTable(blueprint.table)}`]
     }
 
     compileRename(blueprint: Blueprint): string[] {
-        return [`alter table ${this.wrapTable(blueprint.name)} rename to ${this.wrapTable(blueprint.newTableName)}`]
+        return [`alter table ${this.wrapTable(blueprint.table)} rename to ${this.wrapTable(blueprint.newTableName)}`]
     }
 
     wrapTable(name: string) {
